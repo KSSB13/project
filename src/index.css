@@ -1,3 +1,38 @@
+/* Add this to the end of src/index.css */
+
+.portfolio-link {
+	position: fixed;
+	bottom: 1rem;
+	right: 1.5rem;
+	background-color: white;
+	color: #333;
+	padding: 0.5rem 1rem;
+	border-radius: 9999px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+	font-size: 0.875rem;
+	font-weight: 500;
+	z-index: 50;
+	transition: transform 0.2s ease-in-out;
+}
+
+.portfolio-link:hover {
+	transform: translateY(-2px);
+}
+
+.portfolio-link a {
+	font-weight: 700;
+	color: #4f46e5; /* Indigo color to match theme */
+	text-decoration: none;
+}
+
+.dark .portfolio-link {
+	background-color: #1f2937; /* Gray-800 */
+	color: #d1d5db; /* Gray-300 */
+}
+
+.dark .portfolio-link a {
+	color: #818cf8; /* Indigo-400 */
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
