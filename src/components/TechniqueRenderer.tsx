@@ -11,20 +11,14 @@ interface RendererProps {
   onModeToggle: (() => void) | null;
   vigenereKeyword: string;
   onVigenereKeywordChange: (keyword: string) => void;
+  copied: boolean;
+  onCopy: () => void;
 }
 
 // A unified tool UI to be used by multiple techniques
 const UnifiedTool: React.FC<any> = (props) => {
-    const [copied, setCopied] = useState(false);
-    const handleCopy = () => {
-        if (props.outputText) {
-            navigator.clipboard.writeText(props.outputText);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-        }
-    };
     return (
-  <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 h-full flex flex-col">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 h-full flex flex-col">
         <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
           <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">{props.title}</h3>
           {props.onModeToggle && (
@@ -34,25 +28,38 @@ const UnifiedTool: React.FC<any> = (props) => {
             </button>
           )}
         </div>
+        
         {props.children}
-        <div className="grid md:grid-cols-2 gap-6 mt-6">
-          <div className="flex flex-col">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Input</label>
-            <textarea value={props.inputText} onChange={(e) => props.onInputChange(e.target.value)} placeholder="Enter text..." className="w-full h-40 p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none flex-grow" />
+        
+        {/* This grid now grows and contains the new alignment structure */}
+        <div className="grid md:grid-cols-2 gap-6 mt-6 flex-grow">
+          {/* ----- INPUT COLUMN ----- */}
+          {/* This inner grid forces perfect row alignment */}
+          <div className="grid grid-rows-[auto_1fr] gap-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Input</label>
+            <textarea 
+              value={props.inputText} 
+              onChange={(e) => props.onInputChange(e.target.value)} 
+              placeholder="Enter text..." 
+              className="w-full h-full p-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none" 
+            />
           </div>
-          <div>
-            <div className="flex items-center justify-between mb-2">
+
+          {/* ----- OUTPUT COLUMN ----- */}
+          {/* This inner grid forces perfect row alignment */}
+          <div className="grid grid-rows-[auto_1fr] gap-2">
+            <div className="flex items-center justify-between">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Output</label>
               <div className="flex space-x-2">
-                <button onClick={handleCopy} disabled={!props.outputText} className="flex items-center space-x-1 px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 rounded-md">
-                  <Copy size={14} /> <span>{copied ? 'Copied!' : 'Copy'}</span>
+                <button onClick={props.onCopy} disabled={!props.outputText} className="flex items-center space-x-1 px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 rounded-md">
+                  <Copy size={14} /> <span>{props.copied ? 'Copied!' : 'Copy'}</span>
                 </button>
                 <button onClick={() => props.onInputChange('')} className="flex items-center space-x-1 px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md">
                   <RotateCcw size={14} /> <span>Clear</span>
                 </button>
               </div>
             </div>
-            <div className="w-full h-40 p-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-600 rounded-lg overflow-auto">
+            <div className="w-full h-full p-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-600 rounded-lg overflow-auto">
               <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap break-words font-mono">{props.outputText || '...'}</p>
             </div>
           </div>
